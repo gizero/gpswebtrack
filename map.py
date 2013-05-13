@@ -1,5 +1,10 @@
 from flask import Flask, render_template
+import werkzeug.serving
+from socketio.server import SocketIOServer
+from gevent import monkey
+
 app = Flask(__name__)
+monkey.patch_all()
 
 lat = 45.864373
 lng = 9.430089
@@ -8,7 +13,11 @@ lng = 9.430089
 def map(lat=lat, lng=lng):
   return render_template('map.html', lat=lat, lng=lng)
 
-if __name__ == "__main__":
+@werkzeug.serving.run_with_reloader
+def run_dev_server():
   app.debug = True
-  app.run(host='0.0.0.0')
+  port = 5000
+  SocketIOServer(('', port), app, resource="socket.io").serve_forever()
 
+if __name__ == "__main__":
+  run_dev_server()
