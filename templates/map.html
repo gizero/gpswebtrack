@@ -13,14 +13,20 @@
     </script>
     <script type="text/javascript">
       function initialize() {
+        var myLatLng = new google.maps.LatLng({{ lat }}, {{ lng }})
         var mapOptions = {
-          center: new google.maps.LatLng({{ lat }}, {{ lng }}),
+          center: myLatLng,
           zoom: 8,
           mapTypeId: google.maps.MapTypeId.TERRAIN
           };
         var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
         var map_overlay = new google.maps.KmlLayer('https://github.com/gizero/resegup-kml-test/raw/master/resegup2012.kmz');
         map_overlay.setMap(map);
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          title: "the sweeping sweep!"
+        });
+        marker.setMap(map);
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
