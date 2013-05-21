@@ -13,8 +13,9 @@
     </script>
     <script type="text/javascript">
       function initialize() {
-        var myLatLng1 = new google.maps.LatLng({{ lat1 }}, {{ lng1 }})
-        var myLatLng2 = new google.maps.LatLng({{ lat2 }}, {{ lng2 }})
+        var dancingFactor = 1.0001;
+        var myLatLng1 = new google.maps.LatLng({{ lat }}, {{ lng }});
+        var myLatLng2 = new google.maps.LatLng({{ lat }} * dancingFactor, {{ lng }} * dancingFactor);
         var curLatLng = myLatLng1;
         var mapOptions = {
           center: curLatLng,
