@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 import werkzeug.serving
+from socketio import socketio_manage
+from socketio.namespace import BaseNamespace
 from socketio.server import SocketIOServer
 from gevent import monkey
 
@@ -12,6 +14,27 @@ lng = 9.430089
 @app.route("/")
 def map(lat=lat, lng=lng):
   return render_template('map.html', lat=lat, lng=lng)
+
+@app.route("/socket.io/")
+def stream(rest):
+  try:
+    socketio_manage(request.environ, {'/stream': StreamNamespace}, request)
+  except:
+    app.logger.error("Exception while handling socketio connection", exc_info=True)
+
+class StreamNamespace(BaseNamespace):
+  sockets = {}
+  def recv_socket(self):
+    print "Got a socket connection"
+    self.sockets[id(self)] = self
+  def diconnect(self, *args, **kwargs):
+    if id(self) in self.sockets:
+      del self.sockets[id(self)]
+    super(StramNamespace, self).disconnect(*args, **kwargs)
+  @classmethod
+  def broadcast(self, event, message):
+    for ws in self.sockets.values():
+      ws.emit(event, message)
 
 @werkzeug.serving.run_with_reloader
 def run_dev_server():
