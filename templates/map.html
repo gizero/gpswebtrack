@@ -11,6 +11,7 @@
       src="https://maps.googleapis.com/maps/api/js?sensor=true">
     //  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&sensor=SET_TO_TRUE_OR_FALSE">
     </script>
+    <script type="text/javascript" src="/static/socket.io.js"></script>
     <script type="text/javascript">
       function initialize() {
         var dancingFactor = 1.0001;
@@ -36,13 +37,20 @@
         }, 3000);
       }
       google.maps.event.addDomListener(window, 'load', initialize);
+
+      var socket = io.connect('/stream');
+      socket.on('connect', function() {
+        console.log("socket connected");
+      });
+      socket.on('disconnect', function() {
+        console.log("socket disconnected");
+      });
     </script>
     <script>
       addMessage = function(text) {
         console.log("addMessage() says: \"" + text + "\"")
       }
     </script>
-    <script type="text/javascript" src="/static/socket.io.js"></script>
   </head>
   <body>
     <div id="map-canvas"/>
