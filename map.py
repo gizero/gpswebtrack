@@ -9,8 +9,8 @@ from gevent import monkey
 app = Flask(__name__)
 monkey.patch_all()
 
-lat = 45.864373
-lng = 9.430089
+lat = 45.85417259484529
+lng = 9.388961847871542
 
 @app.route("/")
 def map(lat=lat, lng=lng):
@@ -38,13 +38,9 @@ class StreamNamespace(BaseNamespace):
     for ws in self.sockets.values():
       ws.emit(event, message)
 
-@app.route("/trigger")
-def trigger():
-  StreamNamespace.broadcast('message', 'This is the message payload')
-  return Response('The trigger has been pulled')
-
 class Generator:
   def __init__(self):
+    # the file contains a long, space separated list of records
     self.coords = file('test/resegup-kml-test/rawcoords','r').read().split(' ')
     self.mygen = self.next_point_generator_function()
 
@@ -65,6 +61,7 @@ INTERVAL = 1
 def callback(generator):
   pointstr = next(generator.mygen)
   coords = pointstr.split(',')
+  # the record's format is: <lng>,<lat>,<compass?>
   point = LatLng(coords[1], coords[0])
   print '! ', point
   StreamNamespace.broadcast('message', '{ "lat": "%f", "lng": "%f" }' % (point.lat, point.lng))
