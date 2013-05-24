@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response, request
 import werkzeug.serving
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
@@ -15,22 +15,23 @@ lng = 9.430089
 def map(lat=lat, lng=lng):
   return render_template('map.html', lat=lat, lng=lng)
 
-@app.route("/socket.io/")
+@app.route("/socket.io/<path:rest>")
 def stream(rest):
   try:
     socketio_manage(request.environ, {'/stream': StreamNamespace}, request)
   except:
     app.logger.error("Exception while handling socketio connection", exc_info=True)
+  return Response()
 
 class StreamNamespace(BaseNamespace):
   sockets = {}
-  def recv_socket(self):
+  def recv_connect(self):
     print "Got a socket connection"
     self.sockets[id(self)] = self
-  def diconnect(self, *args, **kwargs):
+  def disconnect(self, *args, **kwargs):
     if id(self) in self.sockets:
       del self.sockets[id(self)]
-    super(StramNamespace, self).disconnect(*args, **kwargs)
+    super(StreamNamespace, self).disconnect(*args, **kwargs)
   @classmethod
   def broadcast(self, event, message):
     for ws in self.sockets.values():
@@ -40,6 +41,7 @@ class StreamNamespace(BaseNamespace):
 def run_dev_server():
   app.debug = True
   port = 5000
+  print "Starting map server..."
   SocketIOServer(('', port), app, resource="socket.io").serve_forever()
 
 if __name__ == "__main__":
