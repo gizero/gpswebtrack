@@ -37,6 +37,11 @@ class StreamNamespace(BaseNamespace):
     for ws in self.sockets.values():
       ws.emit(event, message)
 
+@app.route("/trigger")
+def trigger():
+  StreamNamespace.broadcast('message', 'This is the message payload')
+  return Response('The trigger has been pulled')
+
 @werkzeug.serving.run_with_reloader
 def run_dev_server():
   app.debug = True
