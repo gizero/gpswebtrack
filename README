@@ -1,0 +1,2 @@
+gpsfake -c 1 -l -n -o "-G" test/nmea
+
