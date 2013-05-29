@@ -9,8 +9,10 @@ from gevent import monkey
 app = Flask(__name__)
 monkey.patch_all()
 
-lat = 45.85417259484529
-lng = 9.388961847871542
+#lat = 45.85417259484529
+#lng = 9.388961847871542
+lat = 11.584316667
+lng = 43.733866667
 
 @app.route("/")
 def map(lat=lat, lng=lng):
@@ -73,12 +75,22 @@ def loop():
     gevent.sleep(INTERVAL)
     callback(mygen)
 
+def callback_gps(lat, lng):
+  point = LatLng(lat, lng)
+  print '! ', point
+  StreamNamespace.broadcast('message', '{ "lat": "%f", "lng": "%f" }' % (point.lat, point.lng))
+
+def loop_gps():
+  import gpsclient
+  gpsclient.run(debug=True, callback=callback_gps)
+
 @werkzeug.serving.run_with_reloader
 def run_dev_server():
   app.debug = True
   port = 5000
   print "Starting latlng generator server..."
-  gl = gevent.Greenlet.spawn(loop)
+  #gl = gevent.Greenlet.spawn(loop)
+  gl = gevent.Greenlet.spawn(loop_gps)
   print "Starting map server..."
   SocketIOServer(('', port), app, resource="socket.io").serve_forever()
 
