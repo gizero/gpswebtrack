@@ -16,3 +16,10 @@ the [socket.io](http://socket.io/) based on [gevent](http://www.gevent.org/)
 which is based on virtualenv.
 * gps data must be provided by gpsd on its socket based interface
 
+## Installation
+    git clone https://github.com/gizero/gpswebtrack.git
+    . ./venv_init.sh
+    python map.py
+
+## How to test
+Connect your browser to: [http://localhost:5000](http://localhost:5000)
