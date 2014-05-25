@@ -14,7 +14,15 @@ the [socket.io](http://socket.io/) based on [gevent](http://www.gevent.org/)
 ## Requirements
 * Python related dependencies are automatically brought in by the installation script,
 which is based on virtualenv.
-* gps data must be provided by gpsd on its socket based interface
+* gps data must be provided by gpsd on its socket based interface. Please refer to gpsd documentation
+to setup a working gpsd installation
+* the following (or the equivalent for your distro) packages should be installed before following
+instructions in the next section:
+  * git
+  * python-virtualenv
+  * python-dev
+  * python-gps
+  * gpsd
 
 ## Installation
     git clone https://github.com/gizero/gpswebtrack.git
